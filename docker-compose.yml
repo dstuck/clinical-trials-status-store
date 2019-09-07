@@ -6,8 +6,8 @@ services:
     image: psql
     build:
       context: ./db
-    volumes:
-      - ./db/data/:/var/lib/postgresql/data
+#    volumes: this persists the db code locally
+#      - ./db/data/:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234  # To be moved to environment file
