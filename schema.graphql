@@ -1,0 +1,761 @@
+# source: http://localhost:5000/graphql
+# timestamp: Sun Sep 08 2019 17:08:25 GMT-0500 (Central Daylight Time)
+
+"""All input for the create `Institution` mutation."""
+input CreateInstitutionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Institution` to be created by this mutation."""
+  institution: InstitutionInput!
+}
+
+"""The output of our create `Institution` mutation."""
+type CreateInstitutionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Institution` that was created by this mutation."""
+  institution: Institution
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Institution`. May be used by Relay 1."""
+  institutionEdge(
+    """The method to use when ordering `Institution`."""
+    orderBy: [InstitutionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InstitutionsEdge
+}
+
+"""All input for the create `Trial` mutation."""
+input CreateTrialInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Trial` to be created by this mutation."""
+  trial: TrialInput!
+}
+
+"""The output of our create `Trial` mutation."""
+type CreateTrialPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Trial` that was created by this mutation."""
+  trial: Trial
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Institution` that is related to this `Trial`."""
+  institutionByOrgId: Institution
+
+  """An edge for our `Trial`. May be used by Relay 1."""
+  trialEdge(
+    """The method to use when ordering `Trial`."""
+    orderBy: [TrialsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TrialsEdge
+}
+
+"""A location in a connection that can be used for resuming pagination."""
+scalar Cursor
+
+"""
+A point in time as described by the [ISO
+8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+"""
+scalar Datetime
+
+"""All input for the `deleteInstitutionById` mutation."""
+input DeleteInstitutionByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""All input for the `deleteInstitution` mutation."""
+input DeleteInstitutionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Institution` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Institution` mutation."""
+type DeleteInstitutionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Institution` that was deleted by this mutation."""
+  institution: Institution
+  deletedInstitutionId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Institution`. May be used by Relay 1."""
+  institutionEdge(
+    """The method to use when ordering `Institution`."""
+    orderBy: [InstitutionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InstitutionsEdge
+}
+
+"""All input for the `deleteTrialById` mutation."""
+input DeleteTrialByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: Int!
+}
+
+"""All input for the `deleteTrial` mutation."""
+input DeleteTrialInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Trial` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Trial` mutation."""
+type DeleteTrialPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Trial` that was deleted by this mutation."""
+  trial: Trial
+  deletedTrialId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Institution` that is related to this `Trial`."""
+  institutionByOrgId: Institution
+
+  """An edge for our `Trial`. May be used by Relay 1."""
+  trialEdge(
+    """The method to use when ordering `Trial`."""
+    orderBy: [TrialsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TrialsEdge
+}
+
+"""Institutions that run clinical trials."""
+type Institution implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  orgName: String
+  orgType: String
+  createdDate: Datetime
+  updatedDate: Datetime
+
+  """Reads and enables pagination through a set of `Trial`."""
+  trialsByOrgId(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Trial`."""
+    orderBy: [TrialsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TrialCondition
+  ): TrialsConnection!
+}
+
+"""
+A condition to be used against `Institution` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input InstitutionCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `orgName` field."""
+  orgName: String
+
+  """Checks for equality with the object’s `orgType` field."""
+  orgType: String
+
+  """Checks for equality with the object’s `createdDate` field."""
+  createdDate: Datetime
+
+  """Checks for equality with the object’s `updatedDate` field."""
+  updatedDate: Datetime
+}
+
+"""An input for mutations affecting `Institution`"""
+input InstitutionInput {
+  id: Int
+  orgName: String
+  orgType: String
+  createdDate: Datetime
+  updatedDate: Datetime
+}
+
+"""
+Represents an update to a `Institution`. Fields that are set will be updated.
+"""
+input InstitutionPatch {
+  id: Int
+  orgName: String
+  orgType: String
+  createdDate: Datetime
+  updatedDate: Datetime
+}
+
+"""A connection to a list of `Institution` values."""
+type InstitutionsConnection {
+  """A list of `Institution` objects."""
+  nodes: [Institution]!
+
+  """
+  A list of edges which contains the `Institution` and cursor to aid in pagination.
+  """
+  edges: [InstitutionsEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Institution` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Institution` edge in the connection."""
+type InstitutionsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Institution` at the end of the edge."""
+  node: Institution
+}
+
+"""Methods to use when ordering `Institution`."""
+enum InstitutionsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  ORG_NAME_ASC
+  ORG_NAME_DESC
+  ORG_TYPE_ASC
+  ORG_TYPE_DESC
+  CREATED_DATE_ASC
+  CREATED_DATE_DESC
+  UPDATED_DATE_ASC
+  UPDATED_DATE_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""
+The root mutation type which contains root level fields which mutate data.
+"""
+type Mutation {
+  """Creates a single `Institution`."""
+  createInstitution(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateInstitutionInput!
+  ): CreateInstitutionPayload
+
+  """Creates a single `Trial`."""
+  createTrial(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateTrialInput!
+  ): CreateTrialPayload
+
+  """
+  Updates a single `Institution` using its globally unique id and a patch.
+  """
+  updateInstitution(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateInstitutionInput!
+  ): UpdateInstitutionPayload
+
+  """Updates a single `Institution` using a unique key and a patch."""
+  updateInstitutionById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateInstitutionByIdInput!
+  ): UpdateInstitutionPayload
+
+  """Updates a single `Trial` using its globally unique id and a patch."""
+  updateTrial(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTrialInput!
+  ): UpdateTrialPayload
+
+  """Updates a single `Trial` using a unique key and a patch."""
+  updateTrialById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTrialByIdInput!
+  ): UpdateTrialPayload
+
+  """Deletes a single `Institution` using its globally unique id."""
+  deleteInstitution(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteInstitutionInput!
+  ): DeleteInstitutionPayload
+
+  """Deletes a single `Institution` using a unique key."""
+  deleteInstitutionById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteInstitutionByIdInput!
+  ): DeleteInstitutionPayload
+
+  """Deletes a single `Trial` using its globally unique id."""
+  deleteTrial(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTrialInput!
+  ): DeleteTrialPayload
+
+  """Deletes a single `Trial` using a unique key."""
+  deleteTrialById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTrialByIdInput!
+  ): DeleteTrialPayload
+}
+
+"""An object with a globally unique `ID`."""
+interface Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: Cursor
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: Cursor
+}
+
+"""The root query type which gives access points into the data universe."""
+type Query implements Node {
+  """
+  Exposes the root query type nested one level down. This is helpful for Relay 1
+  which can only query top level fields if they are in a particular form.
+  """
+  query: Query!
+
+  """
+  The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
+  """
+  nodeId: ID!
+
+  """Fetches an object given its globally unique `ID`."""
+  node(
+    """The globally unique `ID`."""
+    nodeId: ID!
+  ): Node
+
+  """Reads and enables pagination through a set of `Institution`."""
+  allInstitutions(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Institution`."""
+    orderBy: [InstitutionsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: InstitutionCondition
+  ): InstitutionsConnection
+
+  """Reads and enables pagination through a set of `Trial`."""
+  allTrials(
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """The method to use when ordering `Trial`."""
+    orderBy: [TrialsOrderBy!] = [PRIMARY_KEY_ASC]
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: TrialCondition
+  ): TrialsConnection
+  institutionById(id: Int!): Institution
+  trialById(id: Int!): Trial
+
+  """Reads a single `Institution` using its globally unique `ID`."""
+  institution(
+    """
+    The globally unique `ID` to be used in selecting a single `Institution`.
+    """
+    nodeId: ID!
+  ): Institution
+
+  """Reads a single `Trial` using its globally unique `ID`."""
+  trial(
+    """The globally unique `ID` to be used in selecting a single `Trial`."""
+    nodeId: ID!
+  ): Trial
+}
+
+"""Trials from clinicaltrials.gov with their completion status."""
+type Trial implements Node {
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  id: Int!
+  trialId: String
+  completionDate: Datetime
+  completionStatus: String
+  resultsReportDate: Datetime
+  clinicaltrialsUpdatedAt: Datetime
+  createdAt: Datetime
+  updatedAt: Datetime
+  orgId: Int!
+
+  """Reads a single `Institution` that is related to this `Trial`."""
+  institutionByOrgId: Institution
+}
+
+"""
+A condition to be used against `Trial` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input TrialCondition {
+  """Checks for equality with the object’s `id` field."""
+  id: Int
+
+  """Checks for equality with the object’s `trialId` field."""
+  trialId: String
+
+  """Checks for equality with the object’s `completionDate` field."""
+  completionDate: Datetime
+
+  """Checks for equality with the object’s `completionStatus` field."""
+  completionStatus: String
+
+  """Checks for equality with the object’s `resultsReportDate` field."""
+  resultsReportDate: Datetime
+
+  """Checks for equality with the object’s `clinicaltrialsUpdatedAt` field."""
+  clinicaltrialsUpdatedAt: Datetime
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+
+  """Checks for equality with the object’s `orgId` field."""
+  orgId: Int
+}
+
+"""An input for mutations affecting `Trial`"""
+input TrialInput {
+  id: Int
+  trialId: String
+  completionDate: Datetime
+  completionStatus: String
+  resultsReportDate: Datetime
+  clinicaltrialsUpdatedAt: Datetime
+  createdAt: Datetime
+  updatedAt: Datetime
+  orgId: Int!
+}
+
+"""
+Represents an update to a `Trial`. Fields that are set will be updated.
+"""
+input TrialPatch {
+  id: Int
+  trialId: String
+  completionDate: Datetime
+  completionStatus: String
+  resultsReportDate: Datetime
+  clinicaltrialsUpdatedAt: Datetime
+  createdAt: Datetime
+  updatedAt: Datetime
+  orgId: Int
+}
+
+"""A connection to a list of `Trial` values."""
+type TrialsConnection {
+  """A list of `Trial` objects."""
+  nodes: [Trial]!
+
+  """
+  A list of edges which contains the `Trial` and cursor to aid in pagination.
+  """
+  edges: [TrialsEdge!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Trial` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Trial` edge in the connection."""
+type TrialsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Trial` at the end of the edge."""
+  node: Trial
+}
+
+"""Methods to use when ordering `Trial`."""
+enum TrialsOrderBy {
+  NATURAL
+  ID_ASC
+  ID_DESC
+  TRIAL_ID_ASC
+  TRIAL_ID_DESC
+  COMPLETION_DATE_ASC
+  COMPLETION_DATE_DESC
+  COMPLETION_STATUS_ASC
+  COMPLETION_STATUS_DESC
+  RESULTS_REPORT_DATE_ASC
+  RESULTS_REPORT_DATE_DESC
+  CLINICALTRIALS_UPDATED_AT_ASC
+  CLINICALTRIALS_UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  ORG_ID_ASC
+  ORG_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""All input for the `updateInstitutionById` mutation."""
+input UpdateInstitutionByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Institution` being updated.
+  """
+  institutionPatch: InstitutionPatch!
+  id: Int!
+}
+
+"""All input for the `updateInstitution` mutation."""
+input UpdateInstitutionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Institution` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Institution` being updated.
+  """
+  institutionPatch: InstitutionPatch!
+}
+
+"""The output of our update `Institution` mutation."""
+type UpdateInstitutionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Institution` that was updated by this mutation."""
+  institution: Institution
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """An edge for our `Institution`. May be used by Relay 1."""
+  institutionEdge(
+    """The method to use when ordering `Institution`."""
+    orderBy: [InstitutionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): InstitutionsEdge
+}
+
+"""All input for the `updateTrialById` mutation."""
+input UpdateTrialByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Trial` being updated.
+  """
+  trialPatch: TrialPatch!
+  id: Int!
+}
+
+"""All input for the `updateTrial` mutation."""
+input UpdateTrialInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Trial` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Trial` being updated.
+  """
+  trialPatch: TrialPatch!
+}
+
+"""The output of our update `Trial` mutation."""
+type UpdateTrialPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Trial` that was updated by this mutation."""
+  trial: Trial
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `Institution` that is related to this `Trial`."""
+  institutionByOrgId: Institution
+
+  """An edge for our `Trial`. May be used by Relay 1."""
+  trialEdge(
+    """The method to use when ordering `Trial`."""
+    orderBy: [TrialsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TrialsEdge
+}
