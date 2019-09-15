@@ -1,5 +1,12 @@
 # source: http://localhost:5000/graphql
-# timestamp: Sun Sep 08 2019 17:08:25 GMT-0500 (Central Daylight Time)
+# timestamp: Sun Sep 15 2019 11:59:43 GMT-0500 (Central Daylight Time)
+
+"""
+A signed eight-byte integer. The upper big integer values are greater than the
+max value for a JavaScript number. Therefore all big integers will be output as
+strings and not numbers.
+"""
+scalar BigInt
 
 """All input for the create `Institution` mutation."""
 input CreateInstitutionInput {
@@ -222,6 +229,9 @@ type Institution implements Node {
     """
     condition: TrialCondition
   ): TrialsConnection!
+  lateReportCount: BigInt
+  lateReportRate: Float
+  readyForReportCount: BigInt
 }
 
 """
@@ -530,6 +540,8 @@ type Trial implements Node {
 
   """Reads a single `Institution` that is related to this `Trial`."""
   institutionByOrgId: Institution
+  isLate: Boolean
+  readyForReport: Boolean
 }
 
 """
