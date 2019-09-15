@@ -16,15 +16,29 @@ Graphql api for storing clinical trials statuses
               id
               orgName
               orgType
+              lateReportCount
+              readyForReportCount
+              lateReportRate
               trialsByOrgId {
                 nodes {
                   id
                   completionDate
                   completionStatus
                   resultsReportDate
+                  isLate
+                  readyForReport
                 }
               }
             }
           }
         }
         ```
+# Updating schema file
+
+1) `npm install -g graphql-cli`
+
+2) Run with docker
+
+3) `graphql init`
+
+4) `graphql get-schema`
