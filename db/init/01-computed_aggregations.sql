@@ -35,6 +35,10 @@ $$ language sql stable;
 
 CREATE FUNCTION trials_status_schema.institutions_late_report_rate(institution trials_status_schema.institutions)
 RETURNS FLOAT as $$
-    SELECT CAST(trials_status_schema.institutions_late_report_count(institution) AS FLOAT)
-     / trials_status_schema.institutions_ready_for_report_count(institution)
+    SELECT
+    CASE trials_status_schema.institutions_ready_for_report_count(institution)
+        WHEN 0 THEN 0
+        ELSE CAST(trials_status_schema.institutions_late_report_count(institution) AS FLOAT)
+            / trials_status_schema.institutions_ready_for_report_count(institution)
+    END;
 $$ language sql stable;
