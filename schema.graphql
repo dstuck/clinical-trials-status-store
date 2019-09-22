@@ -1,5 +1,5 @@
 # source: http://localhost:5000/graphql
-# timestamp: Sun Sep 15 2019 11:59:43 GMT-0500 (Central Daylight Time)
+# timestamp: Sun Sep 22 2019 17:34:08 GMT-0500 (Central Daylight Time)
 
 """
 A signed eight-byte integer. The upper big integer values are greater than the
@@ -145,7 +145,7 @@ input DeleteTrialByIdInput {
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  id: Int!
+  id: String!
 }
 
 """All input for the `deleteTrial` mutation."""
@@ -505,7 +505,7 @@ type Query implements Node {
     condition: TrialCondition
   ): TrialsConnection
   institutionById(id: Int!): Institution
-  trialById(id: Int!): Trial
+  trialById(id: String!): Trial
 
   """Reads a single `Institution` using its globally unique `ID`."""
   institution(
@@ -528,11 +528,12 @@ type Trial implements Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
-  id: Int!
-  trialId: String
+  id: String!
   completionDate: Datetime
   completionStatus: String
   resultsReportDate: Datetime
+  isDelayed: Boolean
+  contactEmail: String
   clinicaltrialsUpdatedAt: Datetime
   createdAt: Datetime
   updatedAt: Datetime
@@ -549,10 +550,7 @@ A condition to be used against `Trial` object types. All fields are tested for e
 """
 input TrialCondition {
   """Checks for equality with the object’s `id` field."""
-  id: Int
-
-  """Checks for equality with the object’s `trialId` field."""
-  trialId: String
+  id: String
 
   """Checks for equality with the object’s `completionDate` field."""
   completionDate: Datetime
@@ -562,6 +560,12 @@ input TrialCondition {
 
   """Checks for equality with the object’s `resultsReportDate` field."""
   resultsReportDate: Datetime
+
+  """Checks for equality with the object’s `isDelayed` field."""
+  isDelayed: Boolean
+
+  """Checks for equality with the object’s `contactEmail` field."""
+  contactEmail: String
 
   """Checks for equality with the object’s `clinicaltrialsUpdatedAt` field."""
   clinicaltrialsUpdatedAt: Datetime
@@ -578,11 +582,12 @@ input TrialCondition {
 
 """An input for mutations affecting `Trial`"""
 input TrialInput {
-  id: Int
-  trialId: String
+  id: String!
   completionDate: Datetime
   completionStatus: String
   resultsReportDate: Datetime
+  isDelayed: Boolean
+  contactEmail: String
   clinicaltrialsUpdatedAt: Datetime
   createdAt: Datetime
   updatedAt: Datetime
@@ -593,11 +598,12 @@ input TrialInput {
 Represents an update to a `Trial`. Fields that are set will be updated.
 """
 input TrialPatch {
-  id: Int
-  trialId: String
+  id: String
   completionDate: Datetime
   completionStatus: String
   resultsReportDate: Datetime
+  isDelayed: Boolean
+  contactEmail: String
   clinicaltrialsUpdatedAt: Datetime
   createdAt: Datetime
   updatedAt: Datetime
@@ -635,14 +641,16 @@ enum TrialsOrderBy {
   NATURAL
   ID_ASC
   ID_DESC
-  TRIAL_ID_ASC
-  TRIAL_ID_DESC
   COMPLETION_DATE_ASC
   COMPLETION_DATE_DESC
   COMPLETION_STATUS_ASC
   COMPLETION_STATUS_DESC
   RESULTS_REPORT_DATE_ASC
   RESULTS_REPORT_DATE_DESC
+  IS_DELAYED_ASC
+  IS_DELAYED_DESC
+  CONTACT_EMAIL_ASC
+  CONTACT_EMAIL_DESC
   CLINICALTRIALS_UPDATED_AT_ASC
   CLINICALTRIALS_UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -724,7 +732,7 @@ input UpdateTrialByIdInput {
   An object where the defined keys will be set on the `Trial` being updated.
   """
   trialPatch: TrialPatch!
-  id: Int!
+  id: String!
 }
 
 """All input for the `updateTrial` mutation."""

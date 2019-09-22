@@ -15,11 +15,12 @@ COMMENT ON TABLE trials_status_schema.institutions IS
 'Institutions that run clinical trials.';
 
 CREATE TABLE trials_status_schema.trials (
-    id SERIAL PRIMARY KEY,
-    trial_id TEXT,
+    id TEXT PRIMARY KEY,
     completion_date TIMESTAMP,
     completion_status TEXT,
     results_report_date TIMESTAMP,
+    is_delayed BOOLEAN,
+    contact_email TEXT,
     clinicaltrials_updated_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
