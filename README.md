@@ -5,7 +5,7 @@ Graphql api for storing clinical trials statuses
 
 1) `cd clinical-trials-status-store`
 
-2) `docker-compose up --build`
+2) `POSTGRES_USER=postgres POSTGRES_PASSWORD=1234 POSTGRES_DATABASE=clinical_trials_status docker-compose up --build`
 
 3) Navigate to http://0.0.0.0:5000/graphiql
     * Then run query:
