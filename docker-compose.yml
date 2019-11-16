@@ -9,9 +9,9 @@ services:
 #    volumes: this persists the db code locally
 #      - ./db/data/:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234  # To be moved to environment file
-      POSTGRES_DATABASE: clinical_trials_status
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DATABASE
     expose:
       - 5432
     ports:
@@ -30,10 +30,16 @@ services:
       - 5000
     ports:
       - 5000:5000
-    command: ["postgraphile", "--cors", "--connection", $DATABASE_URL, "--host", "0.0.0.0", "--port", "5000", "--schema", "trials_status_schema"]
+    command: ["postgraphile", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "5000", "--schema", "trials_status_schema"]
     links:
       - db
     networks:
       - psql-pgql
+  scraper:
+    container_name: scraper
+    restart: on-failure
+    image: dstuck/clinical-trials-api-scraper:latest
+    depends_on:
+      - graphql
 networks:
   psql-pgql:
