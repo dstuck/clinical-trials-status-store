@@ -12,34 +12,25 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DATABASE
-    expose:
-      - 5432
-    ports:
-      - 5432:5432
-    networks:
-      - psql-pgql
   graphql:
     container_name: pgql
     restart: always
     image: graphile/postgraphile
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgres://postgres:1234@db:5432/clinical_trials_status # To be moved to environment file
-    expose:
-      - 5000
     ports:
-      - 5000:5000
-    command: ["postgraphile", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "5000", "--schema", "trials_status_schema"]
+      - ${GRAPHQL_PORT}
+    command: ["postgraphile", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "${GRAPHQL_PORT}", "--schema", "trials_status_schema"]
     links:
       - db
-    networks:
-      - psql-pgql
   scraper:
     container_name: scraper
-    restart: on-failure
-    image: dstuck/clinical-trials-api-scraper:latest
+    # image: dstuck/clinical-trials-api-scraper:latest
+    build: ../clinical-trials-api-scraper
     depends_on:
       - graphql
-networks:
-  psql-pgql:
+    environment:
+      - GRAPHQL_HOST
+      - GRAPHQL_PORT
+      - SECONDS_BETWEEN_SCRAPES
+    restart: always
