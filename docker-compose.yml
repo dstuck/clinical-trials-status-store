@@ -20,7 +20,7 @@ services:
       - db
     ports:
       - ${GRAPHQL_PORT}
-    command: ["postgraphile", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "${GRAPHQL_PORT}", "--schema", "trials_status_schema"]
+    command: ["postgraphile", "--cors", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "${GRAPHQL_PORT}", "--schema", "trials_status_schema"]
     links:
       - db
   scraper:
