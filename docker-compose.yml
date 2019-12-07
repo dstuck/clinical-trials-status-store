@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   db:
     container_name: psql
@@ -6,8 +6,8 @@ services:
     image: psql
     build:
       context: ./db
-#    volumes: this persists the db code locally
-#      - ./db/data/:/var/lib/postgresql/data
+    #    volumes: this persists the db code locally
+    #      - ./db/data/:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -19,8 +19,19 @@ services:
     depends_on:
       - db
     ports:
-      - ${GRAPHQL_PORT}
-    command: ["postgraphile", "--cors", "--connection", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}", "--host", "0.0.0.0", "--port", "${GRAPHQL_PORT}", "--schema", "trials_status_schema"]
+      - "${HOST_IP:-127.0.0.1}:${GRAPHQL_PORT}:${GRAPHQL_PORT}"
+    command:
+      [
+        "--cors",
+        "--connection",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "${GRAPHQL_PORT}",
+        "--schema",
+        "trials_status_schema",
+      ]
     links:
       - db
   scraper:
