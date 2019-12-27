@@ -9,15 +9,11 @@ services:
 #    volumes: this persists the db code locally
 #      - ./db/data/:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234  # To be moved to environment file
-      POSTGRES_DATABASE: clinical_trials_status
-    expose:
-      - 5432
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DATABASE
     ports:
-      - 5432:5432
-    networks:
-      - psql-pgql
+        - "127.0.0.1:5432:5432"
   graphql:
     container_name: pgql
     restart: always
@@ -29,11 +25,30 @@ services:
     expose:
       - 5000
     ports:
-      - 5000:5000
-    command: ["postgraphile", "--cors", "--connection", $DATABASE_URL, "--host", "0.0.0.0", "--port", "5000", "--schema", "trials_status_schema"]
+      - "${HOST_IP:-127.0.0.1}:${GRAPHQL_PORT}:${GRAPHQL_PORT}"
+    command:
+      [
+        "--cors",
+        "--retry-on-init-fail",
+        "--connection",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "${GRAPHQL_PORT}",
+        "--schema",
+        "trials_status_schema",
+      ]
     links:
       - db
-    networks:
-      - psql-pgql
-networks:
-  psql-pgql:
+  scraper:
+    container_name: scraper
+    # image: dstuck/clinical-trials-api-scraper:latest
+    build: ../clinical-trials-api-scraper
+    depends_on:
+      - graphql
+    environment:
+      - GRAPHQL_HOST
+      - GRAPHQL_PORT
+      - SECONDS_BETWEEN_SCRAPES
+    restart: "no"
