@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   db:
     container_name: psql
@@ -6,8 +6,8 @@ services:
     image: psql
     build:
       context: ./db
-#    volumes: this persists the db code locally
-#      - ./db/data/:/var/lib/postgresql/data
+    #    volumes: this persists the db code locally
+    #      - ./db/data/:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -15,7 +15,7 @@ services:
     expose:
       - 5432
     ports:
-        - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5432:5432"
   graphql:
     container_name: pgql
     restart: always
@@ -53,4 +53,4 @@ services:
       - GRAPHQL_HOST
       - GRAPHQL_PORT
       - SECONDS_BETWEEN_SCRAPES
-    restart: "no"
+    restart: "${RESTART}"

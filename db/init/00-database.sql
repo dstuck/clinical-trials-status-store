@@ -6,7 +6,7 @@ CREATE SCHEMA trials_status_schema;
 CREATE TABLE trials_status_schema.institutions (
   id SERIAL UNIQUE,
   org_name TEXT,
-  org_type TEXT DEFAULT '',
+  org_type TEXT,
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (org_name, org_type)
