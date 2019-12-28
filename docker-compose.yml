@@ -40,6 +40,7 @@ services:
         "${GRAPHQL_PORT}",
         "--schema",
         "trials_status_schema",
+        "${DISABLE_MUTATIONS_FLAG}",
       ]
     links:
       - db
@@ -53,4 +54,6 @@ services:
       - GRAPHQL_HOST
       - GRAPHQL_PORT
       - SECONDS_BETWEEN_SCRAPES
+      - SCRAPER_USE_SQL_FLAG
+      - SCRAPER_MAX_ID
     restart: "${RESTART}"
