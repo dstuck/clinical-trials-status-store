@@ -5,21 +5,35 @@ CREATE SCHEMA trials_status_schema;
 
 CREATE TABLE trials_status_schema.institutions (
   id SERIAL UNIQUE,
-  org_name TEXT,
-  org_type TEXT,
+  org_full_name TEXT,
+  org_class TEXT,
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (org_name, org_type)
+  PRIMARY KEY (org_full_name, org_class)
 );
 COMMENT ON TABLE trials_status_schema.institutions IS 'Institutions that run clinical trials.';
 CREATE TABLE trials_status_schema.trials (
   id TEXT PRIMARY KEY,
+
+  overall_status TEXT,
+  official_title TEXT,
+  condition TEXT,
+  delayed_posting BOOLEAN,
+  why_stopped TEXT,
+  start_date TIMESTAMP,
+  status_verified_date TIMESTAMP,
   completion_date TIMESTAMP,
-  completion_status TEXT,
-  results_report_date TIMESTAMP,
-  is_delayed BOOLEAN,
-  contact_email TEXT,
-  clinicaltrials_updated_at TIMESTAMP,
+  results_first_submit_date TIMESTAMP,
+  results_first_post_date TIMESTAMP,
+  last_update_submit_date TIMESTAMP,
+  point_of_contact_e_mail TEXT,
+  point_of_contact_organization TEXT,
+  responsible_party_investigator_full_name TEXT,
+  responsible_party_type TEXT,
+  overall_official_affiliation TEXT,
+  overall_official_name TEXT,
+
+  data_version TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   org_id INTEGER NOT NULL REFERENCES trials_status_schema.institutions(id)

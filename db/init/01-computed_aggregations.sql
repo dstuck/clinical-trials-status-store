@@ -13,8 +13,8 @@ RETURNS BOOLEAN as $$
     SELECT
     trials_status_schema.trials_ready_for_report(trial) AND
     (
-        (trial.results_report_date IS NULL) OR
-        (trial.results_report_date - trial.completion_date >= INTERVAL '1 year')
+        (trial.results_first_post_date IS NULL) OR
+        (trial.results_first_post_date - trial.completion_date >= INTERVAL '1 year')
     );
 $$ language sql stable;
 
@@ -23,7 +23,7 @@ CREATE FUNCTION trials_status_schema.trials_is_missing(trial trials_status_schem
 RETURNS BOOLEAN as $$
     SELECT
     trials_status_schema.trials_ready_for_report(trial) AND
-    trial.results_report_date IS NULL;
+    trial.results_first_post_date IS NULL;
 $$ language sql stable;
 
 CREATE FUNCTION trials_status_schema.institutions_trial_count(institution trials_status_schema.institutions)
