@@ -41,6 +41,7 @@ services:
         "--schema",
         "trials_status_schema",
         "${DISABLE_MUTATIONS_FLAG}",
+        "--enhance-graphiql",
       ]
     links:
       - db
