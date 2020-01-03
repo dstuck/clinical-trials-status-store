@@ -14,9 +14,9 @@ services:
       - POSTGRES_DATABASE
       - POSTGRES_PORT
     expose:
-      - "${POSTGRES_PORT}"
+      - 5432
     ports:
-      - "127.0.0.1:${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
   graphql:
     container_name: pgql
     restart: always
@@ -32,7 +32,7 @@ services:
         "--cors",
         "--retry-on-init-fail",
         "--connection",
-        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DATABASE}",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}",
         "--host",
         "0.0.0.0",
         "--port",
