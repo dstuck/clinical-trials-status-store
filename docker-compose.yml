@@ -12,20 +12,19 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DATABASE
+      - POSTGRES_PORT
     expose:
-      - 5432
+      - "${POSTGRES_PORT}"
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${POSTGRES_PORT}:${POSTGRES_PORT}"
   graphql:
     container_name: pgql
     restart: always
     image: graphile/postgraphile
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgres://postgres:1234@db:5432/clinical_trials_status # To be moved to environment file
     expose:
-      - 5000
+      - "${GRAPHQL_PORT}"
     ports:
       - "${HOST_IP:-127.0.0.1}:${GRAPHQL_PORT}:${GRAPHQL_PORT}"
     command:
@@ -33,7 +32,7 @@ services:
         "--cors",
         "--retry-on-init-fail",
         "--connection",
-        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DATABASE}",
+        "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DATABASE}",
         "--host",
         "0.0.0.0",
         "--port",
