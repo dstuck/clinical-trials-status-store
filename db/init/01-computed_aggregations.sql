@@ -1,77 +1,45 @@
 \connect clinical_trials_status;
 
-CREATE FUNCTION trials_status_schema.trials_ready_for_report(trial trials_status_schema.trials)
-RETURNS BOOLEAN as $$
-    SELECT
-    (trial.completion_date IS NOT NULL) AND
-    (trial.completion_date <= now() - INTERVAL '1 year');
-$$ language sql stable;
+CREATE FUNCTION trials_status_schema.handle_trial_update()
+RETURNS trigger AS $BODY$
+BEGIN
+    IF TG_OP='UPDATE' OR TG_OP='INSERT' THEN
+        PERFORM trials_status_schema.update_organization_counts(NEW.org_id);
+    END IF;
+    IF TG_OP='UPDATE' OR TG_OP='DELETE' THEN
+        PERFORM trials_status_schema.update_organization_counts(OLD.org_id);
+    END IF;
+    RETURN NEW;
+END $BODY$ language plpgsql;
 
--- is_late includes both late and missing (basically any noncompliant case)
-CREATE FUNCTION trials_status_schema.trials_is_late(trial trials_status_schema.trials)
-RETURNS BOOLEAN as $$
-    SELECT
-    trials_status_schema.trials_ready_for_report(trial) AND
-    (
-        (trial.results_first_post_date IS NULL) OR
-        (trial.results_first_post_date - trial.completion_date >= INTERVAL '1 year')
-    );
-$$ language sql stable;
+CREATE TRIGGER trials_updated
+  AFTER UPDATE OR INSERT OR DELETE
+  ON trials_status_schema.trials
+  FOR EACH ROW
+  EXECUTE PROCEDURE trials_status_schema.handle_trial_update();
 
--- only count trials as missing if results should have been reported by now
-CREATE FUNCTION trials_status_schema.trials_is_missing(trial trials_status_schema.trials)
-RETURNS BOOLEAN as $$
-    SELECT
-    trials_status_schema.trials_ready_for_report(trial) AND
-    trial.results_first_post_date IS NULL;
-$$ language sql stable;
-
-CREATE FUNCTION trials_status_schema.institutions_trial_count(institution trials_status_schema.institutions)
-RETURNS BIGINT as $$
-    SELECT COUNT(id)
-    FROM trials_status_schema.trials as trial_table
-    WHERE trial_table.org_id = institution.id;
-$$ language sql stable;
-COMMENT ON FUNCTION trials_status_schema.institutions_trial_count(institution trials_status_schema.institutions) IS
-E'@sortable';
-
-CREATE FUNCTION trials_status_schema.institutions_missing_results_count(institution trials_status_schema.institutions)
-RETURNS BIGINT as $$
-    SELECT COUNT(id)
-    FROM trials_status_schema.trials as trial_table
-    WHERE trial_table.org_id = institution.id AND
-    trials_status_schema.trials_is_missing(trial_table);
-$$ language sql stable;
-COMMENT ON FUNCTION trials_status_schema.institutions_missing_results_count(institution trials_status_schema.institutions) IS
-E'@sortable';
-
-
-CREATE FUNCTION trials_status_schema.institutions_late_report_count(institution trials_status_schema.institutions)
-RETURNS BIGINT as $$
-    SELECT COUNT(trial_table.id)
-    FROM trials_status_schema.trials as trial_table
-    WHERE trial_table.org_id = institution.id AND
-        trials_status_schema.trials_is_late(trial_table);
-$$ language sql stable;
-COMMENT ON FUNCTION trials_status_schema.institutions_late_report_count(institution trials_status_schema.institutions) IS
-E'@sortable';
-
-CREATE FUNCTION trials_status_schema.institutions_ready_for_report_count(institution trials_status_schema.institutions)
-RETURNS BIGINT as $$
-    SELECT COUNT(trial_table.id)
-    FROM trials_status_schema.trials as trial_table
-    WHERE trial_table.org_id = institution.id AND
-        trials_status_schema.trials_ready_for_report(trial_table);
-$$ language sql stable;
-COMMENT ON FUNCTION trials_status_schema.institutions_ready_for_report_count(institution trials_status_schema.institutions) IS
-E'@sortable';
-
-CREATE FUNCTION trials_status_schema.institutions_late_report_rate(institution trials_status_schema.institutions)
-RETURNS FLOAT as $$
-    SELECT
-    CASE trials_status_schema.institutions_ready_for_report_count(institution)
-        WHEN 0 THEN 0
-        ELSE CAST(trials_status_schema.institutions_late_report_count(institution) AS FLOAT)
-            / trials_status_schema.institutions_ready_for_report_count(institution)
-    END;
-$$ language sql stable;
+CREATE FUNCTION trials_status_schema.update_organization_counts(_org_id BIGINT)
+RETURNS BOOLEAN AS $BODY$
+BEGIN
+    update trials_status_schema.organizations o
+    set total_count = t.cnt, should_have_results_count = shr_cnt, late_count = l_cnt, missing_count = m_cnt,
+        on_time_count = ot_cnt, late_frac = l_frac, missing_frac = m_frac, on_time_frac = ot_frac
+    from (
+        select
+            c.*,
+            CASE WHEN shr_cnt > 0 THEN (l_cnt / shr_cnt) ELSE 0.5 END as l_frac,
+            CASE WHEN shr_cnt > 0 THEN (m_cnt / shr_cnt) ELSE 0.5 END as m_frac,
+            CASE WHEN shr_cnt > 0 THEN (ot_cnt / shr_cnt) ELSE 0.5 END as ot_frac
+        from (
+            select
+                count(*) as cnt,
+                sum(should_have_results::int) as shr_cnt,
+                sum(is_late::int) as l_cnt,
+                sum(is_missing::int) as m_cnt,
+                sum(is_on_time::int) as ot_cnt
+            from trials_status_schema.trials t where t.org_id = _org_id
+        ) c
+    ) t
+    where o.id = _org_id;
+    RETURN true;
+END $BODY$ language plpgsql;
