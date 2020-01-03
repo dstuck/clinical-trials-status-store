@@ -26,7 +26,7 @@ services:
     expose:
       - "${GRAPHQL_PORT}"
     ports:
-      - "${HOST_IP:-127.0.0.1}:${GRAPHQL_PORT}:${GRAPHQL_PORT}"
+      - "${GRAPHQL_HOST:-127.0.0.1}:${GRAPHQL_PORT}:${GRAPHQL_PORT}"
     command:
       [
         "--cors",
