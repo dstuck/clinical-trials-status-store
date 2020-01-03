@@ -1,6 +1,6 @@
 \connect clinical_trials_status;
 
-CREATE FUNCTION trials_status_schema.handle_trial_update()
+CREATE OR REPLACE FUNCTION trials_status_schema.handle_trial_update()
 RETURNS trigger AS $BODY$
 BEGIN
     IF TG_OP='UPDATE' OR TG_OP='INSERT' THEN
@@ -18,7 +18,7 @@ CREATE TRIGGER trials_updated
   FOR EACH ROW
   EXECUTE PROCEDURE trials_status_schema.handle_trial_update();
 
-CREATE FUNCTION trials_status_schema.update_organization_counts(_org_id BIGINT)
+CREATE OR REPLACE FUNCTION trials_status_schema.update_organization_counts(_org_id BIGINT)
 RETURNS BOOLEAN AS $BODY$
 BEGIN
     update trials_status_schema.organizations o
@@ -27,9 +27,9 @@ BEGIN
     from (
         select
             c.*,
-            CASE WHEN shr_cnt > 0 THEN (l_cnt / shr_cnt) ELSE 0.5 END as l_frac,
-            CASE WHEN shr_cnt > 0 THEN (m_cnt / shr_cnt) ELSE 0.5 END as m_frac,
-            CASE WHEN shr_cnt > 0 THEN (ot_cnt / shr_cnt) ELSE 0.5 END as ot_frac
+            CASE WHEN shr_cnt > 0 THEN (l_cnt::float / shr_cnt) ELSE 0.5 END as l_frac,
+            CASE WHEN shr_cnt > 0 THEN (m_cnt::float / shr_cnt) ELSE 0.5 END as m_frac,
+            CASE WHEN shr_cnt > 0 THEN (ot_cnt::float / shr_cnt) ELSE 0.5 END as ot_frac
         from (
             select
                 count(*) as cnt,
