@@ -1,7 +1,8 @@
 # clinical-trials-status-store
+
 Graphql api for storing clinical trials statuses
 
-# Current testing
+## Current testing
 
 1) `cd clinical-trials-status-store`
 
@@ -33,7 +34,7 @@ Graphql api for storing clinical trials statuses
           }
         }
         ```
-# Updating schema file
+## Updating schema file
 
 1) `npm install -g graphql-cli`
 
@@ -42,3 +43,9 @@ Graphql api for storing clinical trials statuses
 3) `graphql init`
 
 4) `graphql get-schema`
+
+## Running in production
+
+Modify (but don't commit) the .env file to have better postgres password (if
+it's exposed) and make sure the restart behavior is configured to re-run the
+scraper at the desired interval.
