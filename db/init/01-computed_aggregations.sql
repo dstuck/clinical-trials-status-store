@@ -27,9 +27,9 @@ BEGIN
     from (
         select
             c.*,
-            CASE WHEN shr_cnt > 0 THEN (l_cnt::float / shr_cnt) ELSE 0.5 END as l_frac,
-            CASE WHEN shr_cnt > 0 THEN (m_cnt::float / shr_cnt) ELSE 0.5 END as m_frac,
-            CASE WHEN shr_cnt > 0 THEN (ot_cnt::float / shr_cnt) ELSE 0.5 END as ot_frac
+            CASE WHEN shr_cnt > 0 THEN (l_cnt::float / shr_cnt) ELSE NULL END as l_frac,
+            CASE WHEN shr_cnt > 0 THEN (m_cnt::float / shr_cnt) ELSE NULL END as m_frac,
+            CASE WHEN shr_cnt > 0 THEN (ot_cnt::float / shr_cnt) ELSE NULL END as ot_frac
         from (
             select
                 count(*) as cnt,
