@@ -25,13 +25,18 @@ CREATE TABLE trials_status_schema.trials (
   id TEXT PRIMARY KEY,
 
   -- fields scraped directly from clinicaltrials.gov
+  is_applicable_trial BOOLEAN,
   brief_title TEXT,
   delayed_posting BOOLEAN,
   design_primary_purpose TEXT,
   last_update_submit_date TIMESTAMP,
   location_country TEXT,
   is_f_d_a_regulated_drug BOOLEAN,
+  is_interventional BOOLEAN,
+  is_major_device_test BOOLEAN,
+  is_major_drug_test BOOLEAN,
   is_unapproved_device BOOLEAN,
+  is_under_fda_oversight BOOLEAN,
   is_u_s_export BOOLEAN,
   n_c_t_id TEXT,
   overall_status TEXT,
