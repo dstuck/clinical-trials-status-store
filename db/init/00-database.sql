@@ -8,7 +8,8 @@ CREATE TABLE trials_status_schema.organizations (
   org_full_name TEXT,
   org_class TEXT,
   total_count INT DEFAULT 0,
-  should_have_results_count INT,
+  should_have_results_count INT DEFAULT 0,
+  has_regulated_studies BOOLEAN DEFAULT false,
   late_count INT DEFAULT 0,
   missing_count INT DEFAULT 0,
   on_time_count INT DEFAULT 0,
@@ -20,6 +21,7 @@ CREATE TABLE trials_status_schema.organizations (
   PRIMARY KEY (org_full_name, org_class)
 );
 COMMENT ON TABLE trials_status_schema.organizations IS 'Institutions that run clinical trials.';
+CREATE INDEX has_regulated_studies ON trials_status_schema.organizations (has_regulated_studies);
 
 CREATE TABLE trials_status_schema.trials (
   id TEXT PRIMARY KEY,
