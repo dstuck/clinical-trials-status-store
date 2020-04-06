@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION trials_status_schema.update_organization_counts(_org_
 RETURNS BOOLEAN AS $BODY$
 BEGIN
     update trials_status_schema.organizations o
-    set total_count = t.cnt, should_have_results_count = shr_cnt, late_count = l_cnt, missing_count = m_cnt,
+    set total_count = t.cnt, should_have_results_count = shr_cnt, has_regulated_studies = shr_cnt > 0, late_count = l_cnt, missing_count = m_cnt,
         on_time_count = ot_cnt, late_frac = l_frac, missing_frac = m_frac, on_time_frac = ot_frac
     from (
         select
